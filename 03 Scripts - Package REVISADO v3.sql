@@ -441,19 +441,19 @@ CREATE OR REPLACE PACKAGE BODY PKG_ANALISE_FUZZY AS
 	BEGIN
 		v_result := '';
 
-		IF p_normal >= 0.3 THEN
+		IF p_normal > 0 THEN
 			v_result := v_result || 'Normal (' || ROUND(p_normal*100,1) || '%) ';
 		END IF;
 
-		IF p_aceitavel >= 0.3 THEN
+		IF p_aceitavel > 0 THEN
 			v_result := v_result || 'Aceitável (' || ROUND(p_aceitavel*100,1) || '%) ';
 		END IF;
 
-		IF p_alerta >= 0.3 THEN
+		IF p_alerta > 0 THEN
 			v_result := v_result || 'Alerta (' || ROUND(p_alerta*100,1) || '%) ';
 		END IF;
 
-		IF p_falha >= 0.3 THEN
+		IF p_falha > 0 THEN
 			v_result := v_result || 'Falha (' || ROUND(p_falha*100,1) || '%) ';
 		END IF;
 
