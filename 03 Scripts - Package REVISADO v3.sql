@@ -909,10 +909,36 @@ CREATE OR REPLACE PACKAGE BODY PKG_ANALISE_FUZZY AS
             v_falha
         );
 
-		--Salvar na tabela?
-
-        RETURN v_resultado;
-    END;
+		--Salvar na tabela
+		INSERT INTO MAN_FALHA (
+		    FAL_ID_POS,
+			--FAL_ID_R_TEMP,
+			--FAL_ID_R_LUB,
+			--FAL_ID_OCORRENCIA,
+			--FAL_ID_TP_ALERTA,
+		    FAL_DATA,
+		    FAL_FUZZY_NUM,
+		    FAL_FUZZY_LING,
+		    FAL_FUZZY_DOM,
+		    FAL_GRAU_NORMAL,
+		    FAL_GRAU_ACEITAVEL,
+		    FAL_GRAU_ALERTA,
+		    FAL_GRAU_FALHA
+		) VALUES (
+		    P_ID_POSICAO,
+			--FAL_ID_R_TEMP,
+			--FAL_ID_R_LUB,
+			--FAL_ID_OCORRENCIA,
+			--FAL_ID_TP_ALERTA,
+		    SYSDATE,
+		    v_resultado,
+		    v_estado_linguistico,
+		    v_estado_dominante,
+		    v_normal,
+		    v_aceitavel,
+		    v_alerta,
+		    v_falha
+		);
 
 END PKG_ANALISE_FUZZY;
 /
