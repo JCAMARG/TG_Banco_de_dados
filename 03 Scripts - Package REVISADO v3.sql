@@ -543,8 +543,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_ANALISE_FUZZY AS
         RETURN v_numerator / v_denominator;
     END;
 
-	-- Função de pertinencia
-	PROCEDURE pertinencia_status (
+	-- Calculo de pertinencia
+	PROCEDURE PR_PERTINENCIA_STATUS (
 	    p_grau        IN  NUMBER,
 	    o_normal      OUT NUMBER,
 	    o_aceitavel   OUT NUMBER,
@@ -940,7 +940,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_ANALISE_FUZZY AS
         );
 
 		-- PERTINENCIA
-		pertinencia_status(
+		PR_PERTINENCIA_STATUS(
 		    p_grau      => v_resultado,
 		    o_normal    => v_normal,
 		    o_aceitavel => v_aceitavel,
