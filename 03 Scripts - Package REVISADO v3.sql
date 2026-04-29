@@ -543,6 +543,52 @@ CREATE OR REPLACE PACKAGE BODY PKG_ANALISE_FUZZY AS
         RETURN v_numerator / v_denominator;
     END;
 
+	-- Função de pertinencia
+	PROCEDURE pertinencia_status (
+	    p_grau        IN  NUMBER,
+	    o_normal      OUT NUMBER,
+	    o_aceitavel   OUT NUMBER,
+	    o_alerta      OUT NUMBER,
+	    o_falha       OUT NUMBER
+	) IS
+	    V1 CONSTANT NUMBER := 1.75;
+	    V2 CONSTANT NUMBER := 2.25;
+	    V3 CONSTANT NUMBER := 3.00;
+	    V4 CONSTANT NUMBER := 3.75;
+	    V5 CONSTANT NUMBER := 4.25;
+	    V6 CONSTANT NUMBER := 5.00;
+	BEGIN
+	    o_normal    := 0;
+	    o_aceitavel := 0;
+	    o_alerta    := 0;
+	    o_falha     := 0;
+	
+	    IF p_grau <= V1 THEN
+	        o_normal := 1;
+	
+	    ELSIF p_grau BETWEEN V2 AND V3 THEN
+	        o_aceitavel := 1;
+	
+	    ELSIF p_grau BETWEEN V4 AND V5 THEN
+	        o_alerta := 1;
+	
+	    ELSIF p_grau >= V6 THEN
+	        o_falha := 1;
+	
+	    ELSIF p_grau > V1 AND p_grau < V2 THEN
+	        o_normal    := (V2 - p_grau) / (V2 - V1);
+	        o_aceitavel := (p_grau - V1) / (V2 - V1);
+	
+	    ELSIF p_grau > V3 AND p_grau < V4 THEN
+	        o_aceitavel := (V4 - p_grau) / (V4 - V3);
+	        o_alerta    := (p_grau - V3) / (V4 - V3);
+	
+	    ELSIF p_grau > V5 AND p_grau < V6 THEN
+	        o_alerta := (V6 - p_grau) / (V6 - V5);
+	        o_falha  := (p_grau - V5) / (V6 - V5);
+	    END IF;
+	END;
+
 
 
     ----------------------------------------------------------------
@@ -885,6 +931,23 @@ CREATE OR REPLACE PACKAGE BODY PKG_ANALISE_FUZZY AS
             v_falha
         );
 
+        -- DESFUZZIFICAÇÃO
+        v_resultado := FN_DEFUZZIFICAR(
+            v_normal,
+            v_aceitavel,
+            v_alerta,
+            v_falha
+        );
+
+		-- PERTINENCIA
+		pertinencia_status(
+		    p_grau      => v_resultado,
+		    o_normal    => v_normal,
+		    o_aceitavel => v_aceitavel,
+		    o_alerta    => v_alerta,
+		    o_falha     => v_falha
+		);
+
 		-- Retorno estado Linguistico Proporcional
 		v_estado_linguistico := FN_INTERPRETAR_ESTADO(
 			v_normal,
@@ -900,14 +963,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_ANALISE_FUZZY AS
 			v_alerta,
 			v_falha
 		);
-
-        -- DESFUZZIFICAÇÃO
-        v_resultado := FN_DEFUZZIFICAR(
-            v_normal,
-            v_aceitavel,
-            v_alerta,
-            v_falha
-        );
 
 		--Salvar na tabela
 		INSERT INTO MAN_FALHA (
