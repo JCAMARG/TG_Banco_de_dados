@@ -566,10 +566,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_ANALISE_FUZZY AS
 	    IF p_grau <= V1 THEN
 	        o_normal := 1;
 	
-	    ELSIF p_grau BETWEEN V2 AND V3 THEN
+	    ELSIF p_grau >= V2 AND p_grau <= V3 THEN
 	        o_aceitavel := 1;
 	
-	    ELSIF p_grau BETWEEN V4 AND V5 THEN
+	    ELSIF p_grau >= V4 AND p_grau <= V5 THEN
 	        o_alerta := 1;
 	
 	    ELSIF p_grau >= V6 THEN
